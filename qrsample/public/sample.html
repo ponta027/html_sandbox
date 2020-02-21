@@ -8,7 +8,7 @@
     #camera, #picture, #result { justify-content:center; margin:5px;}
 
     #picture { display:none; }
-    #result { border: 1px solid gray; width:300px; height:200px; padding:10px;}
+//    #result { border: 1px solid gray; width:300px; height:200px; padding:10px;}
     small { color:gray; }
   </style>
   <script src="js/jquery-3.4.1.min.js"></script>
@@ -18,17 +18,24 @@
 <h1>QR Sample</h1>
 
 <section id="contents">
-  <video id="camera" width="300" height="200" muted></video>
-  <canvas id="picture" width="300" height="200"></canvas>
-  <div id="result">
-    <small>※ここに読み取り結果が表示されます※</small>
-  </div>
+  <video id="camera" width="500" height="500" muted></video>
+  <canvas id="picture" width="500" height="500"></canvas>
 </section>
+<div id="result">
+
+</div>
+
 <form method="POST" action="/sample">
 <div id="resultQR">
-<button id="button">送信</button>
+<button id="button_wav">WAVに変換</button>
+<button id="button_midi">MIDに変換</button>
 </div>
 </form>
+
+test data1
+<img src="test/data1.png"/>
+test data2
+<img src="test/data2.png"/>
 
 
 <script src="js/jsQR.min.js"></script>
@@ -67,14 +74,11 @@ window.onload = () => {
   });
 };
 
-$('#camerachange').on('click', function() {
-    alert('camera change');
-});
 
 $('#button').on('click', function() {
-  var postData = "sample:hoge";
+  var postData = {sample:"hoge"};
   $.post("/sample" ,postData )
-  .done( function(data) { console.log(data.form); } )
+  .done( function(data) { console.log(data); } )
   .fail( function() {console.log("failed");  } )
   .always ( function() {console.log("finished");  } )
   alert("クリックされました");
@@ -85,6 +89,24 @@ var cnt = 0;
 function getDataIndex( binaryData ){
     cnt++;
     return cnt;
+}
+
+// 本来であればサーバ側で認証で妥当性チェックを行う。
+function getQRCodeInfo( binaryData )
+{
+
+    var index = binaryData[0];
+    alert(index);
+    return {"valid":true,"No":index,"totalNo":2};
+}
+
+function updateReadInfo( ret ){
+    /* すべてQRコードが読み終えたかチェック*/
+    for (var i=0; i<$("#resultQR").children("input").length; i++) {
+        alert($("#resultQR").children("input")[i].name);
+    }
+    //すべて読み終えたらボタンを有効にする。
+    return;
 }
 /**
  * QRコードの読み取り
@@ -101,27 +123,36 @@ function checkPicture(){
   // 存在する場合
   //----------------------
   if( code ){
-    var num = getDataIndex( code.binaryData );
-    // 結果を表示
-    setQRResult("#result", btoa(code.binaryData));  // 文字列
-    //setQRResult("#result", code.data);  // 文字列
-    drawLine(ctx, code.location);       // 見つかった箇所に線を引く
-    $('#resultQR').append('<input '+'name =' + num + ' type="hidden" value="' + btoa(code.binaryData)+'"></input>');
+    var ret = getQRCodeInfo( code.binaryData );
+    if( ( "valid" in ret) && ret["valid"]  && ("No" in ret ) && ("totalNo" in ret )){
+            // 結果を表示
+            drawLine(ctx, code.location);       // 見つかった箇所に線を引く
+            var qrdata = btoa(String.fromCharCode(...new Uint8Array(code.binaryData)));
+            if( $('#musicNo'+ret["No"]).length ){
+                $('#musicNo'+ret["No"]).remove();
 
-    // video と canvas を入れ替え
-    canvas.style.display = 'block';
-    video.style.display = 'none';
-//    video.pause();
-    setTimeout( () => {
-      checkPicture();
-    }, 3000);
+            }
+            $('#resultQR').append('<div id="musicNo'+ret["No"]+'">'+'<input '+'name =' + ret["No"] + ' type="hidden" value="' + qrdata +'"></input></div>');
+            updateReadInfo(ret);
 
+            // video と canvas を入れ替え
+            canvas.style.display = 'block';
+            video.style.display = 'none';
+        //    video.pause();
+            setTimeout( () => {
+              checkPicture();
+            }, 1000);
+    }else{
+            setTimeout( () => {
+              checkPicture();
+            }, 500);
+
+    }
   }
   else{
     setTimeout( () => {
       checkPicture();
-      console.log("test");
-    }, 300);
+    }, 500);
   }
 }
 
