@@ -27,3 +27,11 @@ https://jeromeetienne.github.io/AR.js/three.js/examples/marker-training/examples
   </a-marker>
 </a-scene>
 ```
+
+
+## QR Code Reader
+
+https://ponta027.github.io/html_sandbox/qrcode/index.html
+
+Sample Code 
+
