@@ -1,0 +1,12 @@
+#hiddenContainer {
+//  display: none;
+}
+
+#videoContainer {
+  border: 5px solid;
+  border-color: black;
+}
+
+#video {
+    background-color: black;
+}

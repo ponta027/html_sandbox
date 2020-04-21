@@ -1,72 +1,86 @@
-
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>カメラ</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
-    </head>
-    <body>
-        <h1>サンプル</h1>
-        <!-- mobile safariでは動作しなかった -->
-        <!-- <video id="video" width="300" height="200" autoplay="1" ></video> -->
-        <video id="video" width="400" height="300" autoplay muted playsinline></video>
-        <img id="img">
-        <div style="display:none">
-            <canvas id="canvas"></canvas>
-        </div>
-        <input type="button" id="action" value="解析"/>
-    </body>
+<head>
+  <meta charset="UTF-8">
+  <title>QRReaderSample</title>
+  <style>
+//    #contents { display:flex; width:650px;}
+//    #camera, #picture, #result { justify-content:center; margin:5px;}
 
-    <script type="text/javascript">
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || window.navigator.mozGetUserMedia;
-        var video = document.getElementById('video');
-        var localStream = null;
+    /* リーダー部分 */
+    #picture { display:none; }
+//    #result { border: 1px solid gray; width:300px; height:200px; padding:10px;} -->
+    small { color:gray; }
+  </style>
+  <script src="js/jquery-3.4.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+:
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
-        // リアカメラを使用.
-        //navigator.getUserMedia({video: true, audio: false},
-        navigator.getUserMedia(
-            {
-                audio: false,
-                video: { facingMode: { exact: "environment" } }
-            },
-            function(stream) {
-                // mobile safariでは動作しない.
-                //window.URL = window.URL || window.webkitURL;
-                //video.src = window.URL.createObjectURL(stream);
-                video.srcObject = stream;
-                localStream = stream;
-            },
-            function(err) {
-                console.log(err);
-            }
-        );
+ <link rel="stylesheet" type="text/css" href="css/index.css">
 
-        function decodeImageFromBase64(data, callback){
-            qrcode.callback = callback;
-            qrcode.decode(data)
-        }
+  <script>
+    $(document).ready(function() {
+      $("#slider").slider({
+          value:500,
+          min:100,
+          max:1000,
+          step:10,
+          range:"min"
+      });
+    });
 
-        document.getElementById("action").addEventListener('click', function() {
-            if(localStream) {
-                var canvas = document.getElementById('canvas');
-                var ctx = canvas.getContext('2d');
-                var img = document.getElementById('img');
+  </script>
+</head>
+<body>
 
-                //videoの縦幅横幅を取得
-                var w = video.offsetWidth;
-                var h = video.offsetHeight;
+<h1>QRCode Reader</h1>
 
-                //同じサイズをcanvasに指定
-                canvas.setAttribute("width", w);
-                canvas.setAttribute("height", h);
+<table border="1">
+<tr><td>
 
-                //canvasにコピー
-                ctx.drawImage(video, 0, 0, w, h);
+  <video  id="camera" muted playsinline autoplay></video>
+<div/>
+</td></tr> <tr><td>
+  <!-- <canvas id="picture" ></canvas> --> 
 
-                decodeImageFromBase64(canvas.toDataURL('image/png'), function(result) {
-                    alert(result);
-                });
-            }
-       },false);
-    </script>
+<div id="hiddenContainer">
+<!--
+<a id="hiddenLink"></a>
+-->
+<canvas id="hiddenCanvasForQR"></canvas>
+<canvas id="hiddenCanvas"></canvas>
+</div>
+
+</td></tr> <tr><td>
+   <select id="jsQROption">
+<option value="attemptBoth">attemptBoth </option>
+<option value="dontInvert" selected>dontInvert </option>
+<option value="onlyInvert">onlyInvert </option>
+<option value="invertFirst">invertFirst </option>
+    </select>
+<br/><br/>
+<div id='slider'></div>
+<div id='slider_val'></div>
+
+
+
+</td></tr>
+<tr><td>
+
+
+  <div id="count"> </div>
+  <div id="result">
+    <textarea class="textarea" rows="30" cols="50">
+    ※ここに読み取り結果が表示されます※
+</textarea>
+  </div>
+
+</td></tr>
+</table>
+
+<script src="js/index.js"></script>
+</body>
 </html>
