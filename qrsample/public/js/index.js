@@ -1,7 +1,9 @@
 const FACING_MODE_ENVIRONMENT = "environment";
 const FACING_MODE_USER = "user";
 let gCurrentCameraFacingMode = FACING_MODE_ENVIRONMENT;
-const intervalTime = 1000;
+let intervalTime = 250;
+let readCount = 0;
+
 const switchCamera = () => {
   if (gCurrentCameraFacingMode === FACING_MODE_ENVIRONMENT) {
     gCurrentCameraFacingMode = FACING_MODE_USER;
@@ -14,9 +16,12 @@ const switchCamera = () => {
 
 const video = document.querySelector("#camera");
 const canvas = document.querySelector("#picture");
-const ctx = canvas.getContext("2d");
+//const ctx = canvas.getContext("2d");
 
-
+$("#slider").bind("slidechange", function(event, ui) {
+  $("#slider_val").text(ui.value);
+  intervalTime = ui.value;
+});
 
 const startVideo = () => {
   console.log("startVideo");
@@ -35,11 +40,13 @@ const startVideo = () => {
                   max: 960
                 },
         */
+/*
         iso: {
           min: 100,
           ideal: 1000,
           max: 1600
         },
+*/
         facingMode: gCurrentCameraFacingMode
       }
     })
@@ -60,21 +67,32 @@ startVideo();
 
 const checkPicture = () => {
 
+  const canvas = document.getElementById('hiddenCanvasForQR');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  const option = document.getElementById('jsQROption').value;
+
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+  const code = jsQR(imageData.data, canvas.width, canvas.height
+    , {
+      inversionAttempts: option,
+    //inversionAttempts: "dontInvert",
+    }
+  );
 
 
   //----------------------
   // 存在する場合
   //----------------------
   if (code) {
-    // 結果を表示
-    drawLine(ctx, code.location); // 見つかった箇所に線を引く
+    drawLine(ctx, code.location);
     //    var qrdata = btoa(String.fromCharCode(...new Uint8Array(code.binaryData)));
 
     insertResult("#result", code.data); // 文字列
-    // video と canvas を入れ替え
     /*
     canvas.style.display = 'block';
     video.style.display = 'none';
@@ -110,7 +128,14 @@ const showUnSupportMessage = () => {
   document.querySelector("#message").text = "unsupport";
 }
 
+var current = new Date();
 const insertResult = (id, data) => {
+  readCount++;
 
-  document.querySelector(id).innerHTML = data + "<BR>" + document.querySelector(id).textContent;
+  const liLast = document.createElement('li')
+  liLast.textContent = "elapse:" + ((new Date()).getTime() - current.getTime()) + ": QR size" + data.length;
+  var element = document.querySelector(id)
+  element.insertBefore(liLast, element.firstChild)
+  document.querySelector("#count").innerHTML = readCount;
+  current = new Date();
 }

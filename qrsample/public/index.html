@@ -4,46 +4,82 @@
   <meta charset="UTF-8">
   <title>QRReaderSample</title>
   <style>
-    #contents { display:flex; width:650px;}
-    #camera, #picture, #result { justify-content:center; margin:5px;}
+//    #contents { display:flex; width:650px;}
+//    #camera, #picture, #result { justify-content:center; margin:5px;}
 
     /* リーダー部分 */
     #picture { display:none; }
-    #result { border: 1px solid gray; width:300px; height:200px; padding:10px;}
+//    #result { border: 1px solid gray; width:300px; height:200px; padding:10px;} -->
     small { color:gray; }
   </style>
   <script src="js/jquery-3.4.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+:
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+ <link rel="stylesheet" type="text/css" href="css/index.css">
+
+  <script>
+    $(document).ready(function() {
+      $("#slider").slider({
+          value:500,
+          min:100,
+          max:1000,
+          step:10,
+          range:"min"
+      });
+    });
+
+  </script>
 </head>
 <body>
 
 <h1>QRCode Reader</h1>
 
-<section id="contents">
-<table>
+<table border="1">
 <tr><td>
 
-  <!-- カメラ映像 -->
   <video  id="camera" muted playsinline autoplay></video>
 <div/>
 </td></tr> <tr><td>
-  <!-- 処理用 -->
-  <canvas id="picture" ></canvas>
+  <!-- <canvas id="picture" ></canvas> --> 
 
 <div id="hiddenContainer">
+<!--
 <a id="hiddenLink"></a>
-<canvas id="hiddenCanvas"></canvas>
+-->
 <canvas id="hiddenCanvasForQR"></canvas>
+<canvas id="hiddenCanvas"></canvas>
 </div>
 
 </td></tr> <tr><td>
-  <!-- 読み取り結果 -->
+   <select id="jsQROption">
+<option value="attemptBoth">attemptBoth </option>
+<option value="dontInvert" selected>dontInvert </option>
+<option value="onlyInvert">onlyInvert </option>
+<option value="invertFirst">invertFirst </option>
+    </select>
+<br/><br/>
+<div id='slider'></div>
+<div id='slider_val'></div>
+
+
+
+</td></tr>
+<tr><td>
+
+
+  <div id="count"> </div>
   <div id="result">
-    <small>※ここに読み取り結果が表示されます※</small>
+    <textarea class="textarea" rows="30" cols="50">
+    ※ここに読み取り結果が表示されます※
+</textarea>
   </div>
+
 </td></tr>
 </table>
-</section>
 
 <script src="js/index.js"></script>
 </body>
