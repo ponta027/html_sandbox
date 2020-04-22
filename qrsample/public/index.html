@@ -4,13 +4,6 @@
   <meta charset="UTF-8">
   <title>QRReaderSample</title>
   <style>
-//    #contents { display:flex; width:650px;}
-//    #camera, #picture, #result { justify-content:center; margin:5px;}
-
-    /* リーダー部分 */
-    #picture { display:none; }
-//    #result { border: 1px solid gray; width:300px; height:200px; padding:10px;} -->
-    small { color:gray; }
   </style>
   <script src="js/jquery-3.4.1.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -20,11 +13,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
  <link rel="stylesheet" type="text/css" href="css/index.css">
-
   <script>
     $(document).ready(function() {
       $("#slider").slider({
-          value:500,
+          value:250,
           min:100,
           max:1000,
           step:10,
@@ -40,29 +32,35 @@
 
     });
 
+
+
+
+
   </script>
 </head>
 <body>
 
-<h1>QRCode Reader</h1>
+<h1>QR Code Reader Sample </h1>
+カメラの領域とQRコードをなるべく合わせるようにかざしてください。
 
 <table border="1">
 <tr><td>
-
-  <video  id="camera" muted playsinline autoplay></video>
+    <div id="caption"> camera </div>
+  <video  width="320" height="240" id="camera" muted playsinline autoplay></video>
 <div/>
 </td></tr> <tr><td>
   <!-- <canvas id="picture" ></canvas> --> 
-
+<div id="caption">snapshot</div>
 <div id="hiddenContainer">
 <!--
 <a id="hiddenLink"></a>
 -->
 <canvas id="hiddenCanvasForQR"></canvas>
-<canvas id="hiddenCanvas"></canvas>
+<!--<canvas id="hiddenCanvas"></canvas> -->
 </div>
 
 </td></tr> <tr><td>
+<div id="caption">jsQR options</div>
    <select id="jsQROption">
 <option value="attemptBoth">attemptBoth </option>
 <option value="dontInvert" selected>dontInvert </option>
@@ -79,6 +77,8 @@ Frame Rate:
 <div id='slider_frame'></div>
 
 
+camera Setting:
+<div id='videoSetting'></div>
 
 </td></tr>
 <tr><td>
@@ -86,9 +86,7 @@ Frame Rate:
 
   <div id="count"> </div>
   <div id="result">
-    <textarea class="textarea" rows="30" cols="50">
-    ※ここに読み取り結果が表示されます※
-</textarea>
+    <textarea class="textarea" rows="30" cols="50"> </textarea>
   </div>
 
 </td></tr>

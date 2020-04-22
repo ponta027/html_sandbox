@@ -1,99 +1,199 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>QRReaderSample</title>
-  <style>
-//    #contents { display:flex; width:650px;}
-//    #camera, #picture, #result { justify-content:center; margin:5px;}
+const FACING_MODE_ENVIRONMENT = "environment";
+const FACING_MODE_USER = "user";
+let gCurrentCameraFacingMode = FACING_MODE_ENVIRONMENT;
+let intervalTime = 250;
+let frameRate = 10;
+let readCount = 0;
+let width = 320;
+let height = 240;
 
-    /* リーダー部分 */
-    #picture { display:none; }
-//    #result { border: 1px solid gray; width:300px; height:200px; padding:10px;} -->
-    small { color:gray; }
-  </style>
-  <script src="js/jquery-3.4.1.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
-:
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+const switchCamera = () => {
+  if (gCurrentCameraFacingMode === FACING_MODE_ENVIRONMENT) {
+    gCurrentCameraFacingMode = FACING_MODE_USER;
+  } else {
+    gCurrentCameraFacingMode = FACING_MODE_ENVIRONMENT;
+  }
+  startVideo();
+}
 
- <link rel="stylesheet" type="text/css" href="css/index.css">
 
-  <script>
-    $(document).ready(function() {
-      $("#slider").slider({
-          value:500,
-          min:100,
-          max:1000,
-          step:10,
-          range:"min"
-      });
-      $("#slider_frame").slider({
-          value:10,
-          min:1,
-          max:10,
-          step:1,
-          range:"min"
-      });
+const video = document.querySelector("#camera");
+const canvas = document.querySelector("#picture");
+//const ctx = canvas.getContext("2d");
 
-    });
+$("#slider").bind("slidechange", function(event, ui) {
+  $("#slider_val").text(ui.value);
+  intervalTime = ui.value;
+});
 
-  </script>
-</head>
-<body>
+$("#slider_frame").bind("slidechange", function(event, ui) {
+  $("#slider_frame_val").text(ui.value);
+  frameRate = ui.value;
 
-<h1>QRCode Reader</h1>
+  navigator.mediaDevices.getUserMedia({
+    video: {
+      facingMode: gCurrentCameraFacingMode,
+      frameRate: {
+        max: frameRate
+      },
+      width: {
+        ideal: width
+      },
+      height: {
+        ideal: height
+      }
 
-<table border="1">
-<tr><td>
+    }
+  }).then((stream) => {
+    const [track] = stream.getVideoTracks();
+    videoSetting = track.getSettings();
+    showVideoSetting();
+    video.srcObject = stream;
+    video.onloadedmetadata = (e) => {
+      video.play();
+      checkPicture();
+    };
 
-  <video  id="camera" muted playsinline autoplay></video>
-<div/>
-</td></tr> <tr><td>
-  <!-- <canvas id="picture" ></canvas> --> 
 
-<div id="hiddenContainer">
-<!--
-<a id="hiddenLink"></a>
--->
-<canvas id="hiddenCanvasForQR"></canvas>
-<canvas id="hiddenCanvas"></canvas>
-</div>
-
-</td></tr> <tr><td>
-   <select id="jsQROption">
-<option value="attemptBoth">attemptBoth </option>
-<option value="dontInvert" selected>dontInvert </option>
-<option value="onlyInvert">onlyInvert </option>
-<option value="invertFirst">invertFirst </option>
-    </select>
-<br/><br/>
-Interval:
-<div id='slider_val'></div>
-<div id='slider'></div>
-
-Frame Rate:
-<div id='slider_frame_val'></div>
-<div id='slider_frame'></div>
+  });
+});
 
 
 
-</td></tr>
-<tr><td>
+var videoSetting;
+const startVideo = () => {
+  console.log("startVideo");
+  if (navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        width: {
+          ideal: width
+        },
+        height: {
+          ideal: height
+        },
 
+        /*
+                        width: {
+                          min: 320,
+                          ideal: 1280,
+                          max: 1280
+                        },
+                        height: {
+                          min: 240,
+                          ideal: 720,
+                          max: 960
+                        },
+                */
+        iso: {
+          min: 100,
+          ideal: 1000,
+          max: 1600
+        },
+        frameRate: {
+          max: frameRate
+        },
+        facingMode: gCurrentCameraFacingMode
+      }
+    })
+      .then((stream) => {
+        const [track] = stream.getVideoTracks();
+        videoSetting = track.getSettings();
+        showVideoSetting();
+        video.srcObject = stream;
+        video.onloadedmetadata = (e) => {
+          video.play();
+          checkPicture();
+        };
+      }) ;
 
-  <div id="count"> </div>
-  <div id="result">
-    <textarea class="textarea" rows="30" cols="50">
-    ※ここに読み取り結果が表示されます※
-</textarea>
-  </div>
+  } else {
+    showUnSupportMessage();
+  }
+}
 
-</td></tr>
-</table>
+const showVideoSetting = () => {
+  var buf = "<table border='1'>";
+  for (const i in videoSetting) {
+    buf = buf + "<tr><td>" + i + "</td><td>" + videoSetting[i] + "</td></tr>";
 
-<script src="js/index.js"></script>
-</body>
-</html>
+  }
+  $("#videoSetting").html(buf);
+}
+
+startVideo();
+$("#slider_val").text(intervalTime);
+$("#slider_frame_val").text(frameRate);
+
+const checkPicture = () => {
+
+  const canvas = document.getElementById('hiddenCanvasForQR');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  const option = document.getElementById('jsQROption').value;
+  if (canvas.width == 0) {
+    return;
+  }
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+  const jsQRbefore = new Date();
+  const code = jsQR(imageData.data, canvas.width, canvas.height
+    , {
+      inversionAttempts: option,
+    }
+  );
+  const jsQRfinish = new Date();
+
+  //----------------------
+  // 存在する場合
+  //----------------------
+  if (code) {
+    drawLine(ctx, code.location);
+    //    var qrdata = btoa(String.fromCharCode(...new Uint8Array(code.binaryData)));
+
+    insertResult("#result", code.data.length + ":jsQR elapseTime:" + (jsQRfinish.getTime() - jsQRbefore.getTime()));
+
+    setTimeout(() => {
+      checkPicture();
+    }, intervalTime);
+  } else {
+    setTimeout(() => {
+      checkPicture();
+    }, intervalTime);
+  }
+
+}
+const drawLine = (ctx, pos, options = {
+    color: "blue",
+    size: 5
+  }) => {
+  ctx.strokeStyle = options.color;
+  ctx.lineWidth = options.size;
+
+  ctx.beginPath();
+  ctx.moveTo(pos.topLeftCorner.x, pos.topLeftCorner.y);
+  ctx.lineTo(pos.topRightCorner.x, pos.topRightCorner.y);
+  ctx.lineTo(pos.bottomRightCorner.x, pos.bottomRightCorner.y);
+  ctx.lineTo(pos.bottomLeftCorner.x, pos.bottomLeftCorner.y);
+  ctx.lineTo(pos.topLeftCorner.x, pos.topLeftCorner.y);
+  ctx.stroke();
+}
+
+const showUnSupportMessage = () => {
+  document.querySelector("#message").text = "unsupport";
+}
+
+var current = new Date();
+const insertResult = (id, data) => {
+  readCount++;
+
+  const liLast = document.createElement('li')
+  liLast.textContent = "elapse:" + ((new Date()).getTime() - current.getTime()) + ": QR size" + data;
+  var element = document.querySelector(id)
+  element.insertBefore(liLast, element.firstChild)
+  document.querySelector("#count").innerHTML = readCount;
+  current = new Date();
+}

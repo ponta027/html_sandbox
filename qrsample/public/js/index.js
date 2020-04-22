@@ -4,6 +4,8 @@ let gCurrentCameraFacingMode = FACING_MODE_ENVIRONMENT;
 let intervalTime = 250;
 let frameRate = 10;
 let readCount = 0;
+let width = 320;
+let height = 240;
 
 const switchCamera = () => {
   if (gCurrentCameraFacingMode === FACING_MODE_ENVIRONMENT) {
@@ -27,38 +29,77 @@ $("#slider").bind("slidechange", function(event, ui) {
 $("#slider_frame").bind("slidechange", function(event, ui) {
   $("#slider_frame_val").text(ui.value);
   frameRate = ui.value;
+
+  navigator.mediaDevices.getUserMedia({
+    video: {
+      facingMode: gCurrentCameraFacingMode,
+      frameRate: {
+        max: frameRate
+      },
+      width: {
+        ideal: width
+      },
+      height: {
+        ideal: height
+      }
+
+    }
+  }).then((stream) => {
+    const [track] = stream.getVideoTracks();
+    videoSetting = track.getSettings();
+    showVideoSetting();
+    video.srcObject = stream;
+    video.onloadedmetadata = (e) => {
+      video.play();
+      checkPicture();
+    };
+
+
+  });
 });
 
 
+
+var videoSetting;
 const startVideo = () => {
   console.log("startVideo");
   if (navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({
       video: {
+        width: {
+          ideal: width
+        },
+        height: {
+          ideal: height
+        },
+
         /*
-                width: {
-                  min: 320,
-                  ideal: 1280,
-                  max: 1280
-                },
-                height: {
-                  min: 240,
-                  ideal: 720,
-                  max: 960
-                },
-        */
-        /*
-                iso: {
-                  min: 100,
-                  ideal: 1000,
-                  max: 1600
-                },
-        */
-        frameRate: frameRate,
+                        width: {
+                          min: 320,
+                          ideal: 1280,
+                          max: 1280
+                        },
+                        height: {
+                          min: 240,
+                          ideal: 720,
+                          max: 960
+                        },
+                */
+        iso: {
+          min: 100,
+          ideal: 1000,
+          max: 1600
+        },
+        frameRate: {
+          max: frameRate
+        },
         facingMode: gCurrentCameraFacingMode
       }
     })
       .then((stream) => {
+        const [track] = stream.getVideoTracks();
+        videoSetting = track.getSettings();
+        showVideoSetting();
         video.srcObject = stream;
         video.onloadedmetadata = (e) => {
           video.play();
@@ -66,15 +107,23 @@ const startVideo = () => {
         };
       }) ;
 
-    $("#slider_val").text(intervalTime);
-    $("#slider_frame_val").text(frameRate);
   } else {
     showUnSupportMessage();
   }
 }
 
+const showVideoSetting = () => {
+  var buf = "<table border='1'>";
+  for (const i in videoSetting) {
+    buf = buf + "<tr><td>" + i + "</td><td>" + videoSetting[i] + "</td></tr>";
+
+  }
+  $("#videoSetting").html(buf);
+}
 
 startVideo();
+$("#slider_val").text(intervalTime);
+$("#slider_frame_val").text(frameRate);
 
 const checkPicture = () => {
 
@@ -83,7 +132,9 @@ const checkPicture = () => {
   canvas.height = video.videoHeight;
   const ctx = canvas.getContext('2d');
   const option = document.getElementById('jsQROption').value;
-
+  if (canvas.width == 0) {
+    return;
+  }
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -92,7 +143,6 @@ const checkPicture = () => {
   const code = jsQR(imageData.data, canvas.width, canvas.height
     , {
       inversionAttempts: option,
-    //inversionAttempts: "dontInvert",
     }
   );
   const jsQRfinish = new Date();
@@ -106,11 +156,6 @@ const checkPicture = () => {
 
     insertResult("#result", code.data.length + ":jsQR elapseTime:" + (jsQRfinish.getTime() - jsQRbefore.getTime()));
 
-    /*
-    canvas.style.display = 'block';
-    video.style.display = 'none';
-*/
-    //    video.pause();
     setTimeout(() => {
       checkPicture();
     }, intervalTime);
