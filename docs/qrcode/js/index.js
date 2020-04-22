@@ -73,18 +73,6 @@ const startVideo = () => {
           ideal: height
         },
 
-        /*
-                        width: {
-                          min: 320,
-                          ideal: 1280,
-                          max: 1280
-                        },
-                        height: {
-                          min: 240,
-                          ideal: 720,
-                          max: 960
-                        },
-                */
         iso: {
           min: 100,
           ideal: 1000,
@@ -99,8 +87,27 @@ const startVideo = () => {
       .then((stream) => {
         const [track] = stream.getVideoTracks();
         videoSetting = track.getSettings();
+        const capabilities = track.getCapabilities();
+        const input = document.querySelector('input[type="range"]');
+
+        // Map zoom to a slider element.
+        input.min = capabilities.zoom.min;
+        input.max = capabilities.zoom.max;
+        input.step = capabilities.zoom.step;
+        input.value = videoSetting.zoom;
+        input.oninput = function(event) {
+          track.applyConstraints({
+            advanced: [{
+              zoom: event.target.value
+            }]
+          });
+        }
+        input.hidden = false;
         showVideoSetting();
         video.srcObject = stream;
+        if (!('zoom' in capabilities)) {
+          return Promise.reject('Zoom is not supported by ' + track.label);
+        }
         video.onloadedmetadata = (e) => {
           video.play();
           checkPicture();
