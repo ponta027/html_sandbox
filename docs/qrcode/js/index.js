@@ -59,6 +59,9 @@ $("#slider_frame").bind("slidechange", function(event, ui) {
 });
 
 
+function sleep(ms = 0) {
+  return new Promise(r => setTimeout(r, ms));
+}
 
 var videoSetting;
 const startVideo = () => {
@@ -84,11 +87,17 @@ const startVideo = () => {
         facingMode: gCurrentCameraFacingMode
       }
     })
-      .then((stream) => {
+      .then(async stream => {
+
+        await sleep(1000);
         const [track] = stream.getVideoTracks();
         videoSetting = track.getSettings();
         const capabilities = track.getCapabilities();
         const input = document.querySelector('input[type="range"]');
+        if (!('zoom' in capabilities)) {
+          return Promise.reject('Zoom is not supported by ' + track.label);
+        }
+
 
         // Map zoom to a slider element.
         input.min = capabilities.zoom.min;
@@ -105,9 +114,7 @@ const startVideo = () => {
         input.hidden = false;
         showVideoSetting();
         video.srcObject = stream;
-        if (!('zoom' in capabilities)) {
-          return Promise.reject('Zoom is not supported by ' + track.label);
-        }
+
         video.onloadedmetadata = (e) => {
           video.play();
           checkPicture();
