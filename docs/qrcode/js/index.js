@@ -2,6 +2,7 @@ const FACING_MODE_ENVIRONMENT = "environment";
 const FACING_MODE_USER = "user";
 let gCurrentCameraFacingMode = FACING_MODE_ENVIRONMENT;
 let intervalTime = 250;
+let frameRate = 10;
 let readCount = 0;
 
 const switchCamera = () => {
@@ -23,6 +24,12 @@ $("#slider").bind("slidechange", function(event, ui) {
   intervalTime = ui.value;
 });
 
+$("#slider_frame").bind("slidechange", function(event, ui) {
+  $("#slider_frame_val").text(ui.value);
+  frameRate = ui.value;
+});
+
+
 const startVideo = () => {
   console.log("startVideo");
   if (navigator.mediaDevices.getUserMedia) {
@@ -40,13 +47,14 @@ const startVideo = () => {
                   max: 960
                 },
         */
-/*
-        iso: {
-          min: 100,
-          ideal: 1000,
-          max: 1600
-        },
-*/
+        /*
+                iso: {
+                  min: 100,
+                  ideal: 1000,
+                  max: 1600
+                },
+        */
+        frameRate: frameRate,
         facingMode: gCurrentCameraFacingMode
       }
     })
@@ -57,6 +65,9 @@ const startVideo = () => {
           checkPicture();
         };
       }) ;
+
+    $("#slider_val").text(intervalTime);
+    $("#slider_frame_val").text(frameRate);
   } else {
     showUnSupportMessage();
   }
@@ -77,13 +88,14 @@ const checkPicture = () => {
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
+  const jsQRbefore = new Date();
   const code = jsQR(imageData.data, canvas.width, canvas.height
     , {
       inversionAttempts: option,
     //inversionAttempts: "dontInvert",
     }
   );
-
+  const jsQRfinish = new Date();
 
   //----------------------
   // 存在する場合
@@ -92,7 +104,8 @@ const checkPicture = () => {
     drawLine(ctx, code.location);
     //    var qrdata = btoa(String.fromCharCode(...new Uint8Array(code.binaryData)));
 
-    insertResult("#result", code.data); // 文字列
+    insertResult("#result", code.data.length + ":jsQR elapseTime:" + (jsQRfinish.getTime() - jsQRbefore.getTime()));
+
     /*
     canvas.style.display = 'block';
     video.style.display = 'none';
@@ -133,7 +146,7 @@ const insertResult = (id, data) => {
   readCount++;
 
   const liLast = document.createElement('li')
-  liLast.textContent = "elapse:" + ((new Date()).getTime() - current.getTime()) + ": QR size" + data.length;
+  liLast.textContent = "elapse:" + ((new Date()).getTime() - current.getTime()) + ": QR size" + data;
   var element = document.querySelector(id)
   element.insertBefore(liLast, element.firstChild)
   document.querySelector("#count").innerHTML = readCount;
