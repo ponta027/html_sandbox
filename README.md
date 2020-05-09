@@ -1,7 +1,27 @@
-# jointjs
 
 # AR.js
 
+[AR.js](https://github.com/jeromeetienne/AR.js)
+
+AWEB上AR用軽量ライブラリ
+
+* Marker-Base AR
+* Location Base AR
+
+の機能を持っている。
+
+* Web-base機能
+    * three.js + jsartoolkit5 を使っている。
+* WebGL , WebRTCを使っている。
+
+
+
+* [A-FRAME](https://aframe.io/docs/0.9.0/introduction/)
+    * A-FrameはVR構築用フレームワーク
+    * コア機能はentiy-component frameworkである。
+    * declarative , extensibleなもの
+
+    
 ## Sample 
 
 https://ponta027.github.io/html_sandbox/ar_js/ar_sample.html
@@ -13,7 +33,7 @@ https://jeromeetienne.github.io/AR.js/three.js/examples/marker-training/examples
 
 でMarkerを作成する。
 
-``
+```
     <a-scene embedded arjs>
       <a-marker preset="hiro">
           <a-box position='0 0.5 0' material='color: yellow;'></a-box>
@@ -27,3 +47,11 @@ https://jeromeetienne.github.io/AR.js/three.js/examples/marker-training/examples
   </a-marker>
 </a-scene>
 ```
+
+
+## AR.jsのexample
+
+### aframe/example/basic.html
+
+
+
