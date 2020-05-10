@@ -28,6 +28,14 @@ import jsQR, { QRCode } from 'jsqr';
 
 
 
+browser上から起動する場合には、UDMにして、
+htmlに以下のようにする。
+
+```
+ <script type="text/javascript" data-main="js/index.js"
+        src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.js"></script>
+```
+
 
 ## reference
 https://qiita.com/jsakamoto/items/82e9dbd66ef4fb417933
