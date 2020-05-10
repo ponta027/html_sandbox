@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>QRReaderSample</title>
+  <style>
+  </style>
+  <script src="js/jquery-3.4.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+:
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+ <link rel="stylesheet" type="text/css" href="css/index.css">
+  <script>
+    $(document).ready(function() {
+      $("#slider").slider({
+          value:250,
+          min:100,
+          max:1000,
+          step:10,
+          range:"min"
+      });
+      $("#slider_frame").slider({
+          value:10,
+          min:1,
+          max:10,
+          step:1,
+          range:"min"
+      });
+
+    });
+
+
+
+
+
+  </script>
+</head>
+<body>
+
+<h1>QR Code Reader Sample </h1>
+カメラの領域とQRコードをなるべく合わせるようにかざしてください。
+
+<table border="1">
+<tr><td>
+    <div id="caption"> camera </div>
+  <video  width="320" height="240" id="camera" muted playsinline autoplay></video>
+<div/>
+</td></tr> <tr><td>
+  <!-- <canvas id="picture" ></canvas> --> 
+<div id="caption">snapshot</div>
+<div id="hiddenContainer">
+<!--
+<a id="hiddenLink"></a>
+-->
+<canvas id="hiddenCanvasForQR"></canvas>
+<!--<canvas id="hiddenCanvas"></canvas> -->
+</div>
+
+</td></tr> <tr><td>
+<div id="caption">jsQR options</div>
+   <select id="jsQROption">
+<option value="attemptBoth">attemptBoth </option>
+<option value="dontInvert" selected>dontInvert </option>
+<option value="onlyInvert">onlyInvert </option>
+<option value="invertFirst">invertFirst </option>
+    </select>
+<br/><br/>
+Interval:
+<div id='slider_val'></div>
+<div id='slider'></div>
+
+Frame Rate:
+<div id='slider_frame_val'></div>
+<div id='slider_frame'></div>
+
+Zoom:
+<input type="range" hidden>
+
+camera Setting:
+<div id='videoSetting'></div>
+
+</td></tr>
+<tr><td>
+
+
+  <div id="count"> </div>
+  <div id="result">
+    <textarea class="textarea" rows="30" cols="50"> </textarea>
+  </div>
+
+</td></tr>
+</table>
+
+<script src="js/index.js"></script>
+</body>
+</html>

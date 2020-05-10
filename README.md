@@ -49,9 +49,17 @@ https://jeromeetienne.github.io/AR.js/three.js/examples/marker-training/examples
 ```
 
 
+<<<<<<< HEAD
 ## AR.jsのexample
 
 ### aframe/example/basic.html
 
 
+=======
+## QR Code Reader
+
+https://ponta027.github.io/html_sandbox/qrcode/index.html
+
+Sample Code 
+>>>>>>> 64eef93610cdc86cf722401b0af70dd8052e2e02
 
