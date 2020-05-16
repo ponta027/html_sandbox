@@ -3,7 +3,7 @@
 
 [AR.js](https://github.com/jeromeetienne/AR.js)
 
-AWEB上AR用軽量ライブラリ
+WEB上AR用軽量ライブラリ
 
 * Marker-Base AR
 * Location Base AR
@@ -49,17 +49,22 @@ https://jeromeetienne.github.io/AR.js/three.js/examples/marker-training/examples
 ```
 
 
-<<<<<<< HEAD
 ## AR.jsのexample
 
 ### aframe/example/basic.html
 
 
-=======
 ## QR Code Reader
 
 https://ponta027.github.io/html_sandbox/qrcode/index.html
 
 Sample Code 
->>>>>>> 64eef93610cdc86cf722401b0af70dd8052e2e02
+
+
+
+
+## face-api.js sample
+
+
+https://ponta027.github.io/html_sandbox/face-api/webcamFaceDetection.html
 
