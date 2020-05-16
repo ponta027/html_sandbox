@@ -88,7 +88,7 @@ async function changeFaceDetector(detector) {
 
   $('#loader').show()
   if (!isFaceDetectionModelLoaded()) {
-    await getCurrentFaceDetectionNet().load('/face-api')
+    await getCurrentFaceDetectionNet().load('/html_samdbox/face-api')
   }
 
   $(`#${detector}_controls`).show()
