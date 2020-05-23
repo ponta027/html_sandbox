@@ -1,0 +1,12 @@
+/*
+#canvas{
+    position:absolute;
+    width:640;
+    height:480;
+    top:0px;
+    left:0px;
+}
+*/
+#canvasQR{
+        display:none;
+}
