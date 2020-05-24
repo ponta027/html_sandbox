@@ -35,6 +35,20 @@ $(function () {
 
                 ctx.stroke();
 
+                const video = document.getElementById("camera");
+                $("#barcodeFrame").css({position:"absolute",top:video.getBoundingClientRect().top,left:video.getBoundingClientRect().left});
+                const canvasElem = document.getElementById("barcodeFrame"); 
+                canvasElem.width = video.videoWidth;
+                canvasElem.height= video.videoHeight;
+                const ctx2= canvasElem.getContext("2d");
+                for(var i = 0; i < localized.length; i++) {
+                        ctx2.rect(localized[i].x*2,localized[i].y*2,localized[i].width*2,localized[i].height*2); 
+                }
+                ctx2.stroke();
+
+ 
+                    
+
         })
 
         const video = document.getElementById("camera");
@@ -92,6 +106,7 @@ function setUpCamera(videoObj){
         <body>
                 <video  id="camera" muted playsinline autoplay></video>
                 <canvas id="barcode" width="320" height="240"></canvas>
+                <canvas id="barcodeFrame" ></canvas>
                 <div id="barcodeVal"> </div>
         </body>
 </html>
