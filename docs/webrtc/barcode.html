@@ -1,0 +1,97 @@
+<html>
+        <head><title></title></head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/JOB.js"></script>
+        <script>
+
+let intervalId = 0;
+$(function () {
+        JOB.Init();
+        JOB.StreamCallback = function(result) {
+                if( result.length == 0 ){
+                        console.log("decode Error");
+                }else{
+                        console.log(result);
+                        console.log(result[0].Format)
+                        console.log(result[0].Value)
+                        $("#barcodeVal").append(result[0].Format+"/"+result[0].Value)
+                        clearInterval(intervalId);
+                        JOB.StopStreamDecode();
+                }
+        };
+
+        JOB.SwitchLocalizationFeedback(true);
+        JOB.SetLocalizationCallback(function(result) {
+                console.log(result);
+                var canvas = document.getElementById("barcode");
+                var ctx = canvas.getContext("2d");
+                ctx.beginPath();
+                ctx.lineWIdth = "2";
+                ctx.strokeStyle="red";
+                var localized = result;
+                for(var i = 0; i < localized.length; i++) {
+                        ctx.rect(localized[i].x,localized[i].y,localized[i].width,localized[i].height); 
+                }
+
+                ctx.stroke();
+
+        })
+
+        const video = document.getElementById("camera");
+        setUpCamera(video);
+
+});
+function start(video ){
+        JOB.DecodeStream( video );
+        intervalId = setInterval( ()=>{
+                readBarCode(video);
+        },1000);
+
+}
+function readBarCode(video){
+        var canvas = document.getElementById("barcode");
+        if (canvas) {
+                /*
+                        canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                 */
+        }
+        else {
+                console.log("canvas error");
+                return;
+        }
+        var ctx = canvas.getContext("2d");
+        if (!ctx) {
+                console.log("canvas 2d");
+                return;
+        }
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+}
+var mediaStreamConstraints = { audio: false, video: { facingMode: "environment" , width:640 , height:480 } };
+function setUpCamera(videoObj){
+        navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
+                .then((function (stream) {
+                        console.log(stream);
+                        videoObj.srcObject = stream;
+                        videoObj.onloadedmetadata = function (e) {
+                                videoObj.play();
+                                start(videoObj);
+                        };
+                        var track = stream.getVideoTracks()[0];
+                        var capabilities = track.getCapabilities();
+                        if ("zoom" in capabilities) {
+                        }
+                        else {
+                                console.log("zoom not supported");
+                        }
+                })).catch(function (error) {
+                        console.log(error);
+                });
+}
+        </script>
+        <body>
+                <video  id="camera" muted playsinline autoplay></video>
+                <canvas id="barcode" width="320" height="240"></canvas>
+                <div id="barcodeVal"> </div>
+        </body>
+</html>
