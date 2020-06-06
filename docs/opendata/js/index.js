@@ -6,6 +6,9 @@ $( ()=>{
     }).done((data)=>{
             parseData(JSON.parse(data));
     })
+$('.navbar-nav>li>div>a , .dropdown-item>a').on('click', function(){
+        console.log(this.text);
+});
 })
 
 function parseData( json ){
@@ -44,4 +47,5 @@ function logMessage( msg )
 {
         $("#log").val( $("#log").val() +"\n"+ msg )
 }
+
 
