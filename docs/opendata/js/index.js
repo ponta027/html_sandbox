@@ -23,6 +23,10 @@ function parseData( json ){
                 countArray.push( data["小計"])
         }
 
+//        $("#latest").append("TEST");
+       console.log(countArray[countArray.length-1]);
+       $("#latest").append(countArray[countArray.length-1]);
+
         const ctx = $("#myBarChart");
         const myBarChart = new Chart( ctx ,{
                     type:"bar",
