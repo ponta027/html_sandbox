@@ -49,20 +49,17 @@ https://jeromeetienne.github.io/AR.js/three.js/examples/marker-training/examples
 
 ## ImageTracking 
 
-ImageTracking の説明。
-
 https://ar-js-org.github.io/AR.js-Docs/image-tracking/
+にImageTrackingの説明がある。
 
 
 
-### サンプルプログラム
+### サンプルプログラムからTracking Imageの変更
 
-https://ar-js-org.github.io/AR.js-Docs/image-tracking/
+https://ar-js-org.github.io/AR.js-Docs/image-tracking/ は恐竜の画像をかざしたらtrexのgltfを表示する。
 
-は恐竜の画像をかざしたらtrexのgltfを表示する。
+トラッキング画像を恐竜からlennaに変更する。
 
-まずは、トラックする画像を変更する。
-サンプル画像をlennaに変更。
 
 1. https://carnaux.github.io/NFT-Marker-Creator/ にlennaの画像をアップロードする。
 2. lenna.fset , lenna.fset3 , lenna.iset の３ファイルを生成しダウンロード
