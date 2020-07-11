@@ -1,0 +1,29 @@
+<!doctype HTML>
+<html>
+<script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+<script src="https://raw.githack.com/jeromeetienne/AR.js/2.0.5/aframe/build/aframe-ar.js"></script>
+  <body style='margin : 0px; overflow: hidden;'>
+          <a-scene embedded arjs="debugUIEnabled: false">
+
+
+  <!-- ② hiroマーカーでのソース -->
+  <a-marker preset="hiro">
+    <a-sphere scale=".25 .25 .25" position="0 .5 0" color="#111">
+      <a-animation attribute="position" to="0 1 0" direction="alternate" dur="2000" repeat="indefinite">
+      </a-animation>
+    </a-sphere>
+  </a-marker>
+
+  <!-- ③ 作成したマーカーでのソース -->
+  <a-marker type='pattern' url='./pattern-marker.patt'>
+    <a-sphere scale=".25 .25 .25" position="0 .5 0" color="#f00">
+      <a-animation attribute="position" to="0 1 0" direction="alternate" dur="2000" repeat="indefinite">
+      </a-animation>
+    </a-sphere>
+  </a-marker>
+
+
+  <a-entity camera></a-entity>
+</a-scene>
+</body>
+</html>
