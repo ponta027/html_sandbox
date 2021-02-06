@@ -34,8 +34,19 @@ $('#capture').on('click', function(){
     return;
   }
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  const imageData = ctx.getImageData(0, 0, canvas.width, 50);
+  const imageData = ctx.getImageData(0, 0, canvas.width, 30);
 
+  ctx.strokeStyle = "blue";
+  ctx.lineWidth = 5;
+
+
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo( canvas.width , 0);
+  ctx.lineTo( canvas.width , 30);
+  ctx.lineTo( 0 , 30);
+  ctx.lineTo( 0 , 0);
+  ctx.stroke();
 
     Tesseract.recognize(imageData, 'eng', {
     logger: log => {
