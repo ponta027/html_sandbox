@@ -71,6 +71,11 @@ https://ponta027.github.io/html_sandbox/face-api/webcamFaceDetection.html
 QR code Readerのサンプルでvideoの上にQRの枠を表示するようにした。
 https://ponta027.github.io/html_sandbox/webrtc/index.html
 
+## OCR Sample
+
+tesseract.jsを使ったOCRアプリサンプル。
+
+https://ponta027.github.io/html_sandbox/ocr
 
 
 ## OpenData
