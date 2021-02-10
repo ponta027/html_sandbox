@@ -2,55 +2,50 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-    
-  <meta charset="UTF-8">
-  <title>OCR Sample</title>
-  <style>
-  </style>
-  <script src="js/jquery-3.4.1.min.js"></script>
+
+<meta charset="UTF-8">
+<title>OCR Sample</title>
+<style>
+</style>
+<script src="js/jquery-3.4.1.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
 <script src='https://cdn.rawgit.com/naptha/tesseract.js/1.0.7/dist/tesseract.js'></script>
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
- <link rel="stylesheet" type="text/css" href="css/index.css">
+<link rel="stylesheet" type="text/css" href="css/index.css">
 
 <script>
 (function() {
-Tesseract
-.recognize("u.jpg", {
+ Tesseract
+ .recognize("u.jpg", {
 lang: 'jpn'
 })
-.progress(function(p) {
-$("#msg").text('準備中 <' + p.status + ": " + (100 * p.progress).toFixed(1) + '%>')
-})
-.then(function(result) {
-$("#msg").text('準備完了')
-});
-}());
+ .progress(function(p) {
+         $("#msg").text('準備中 <' + p.status + ": " + (100 * p.progress).toFixed(1) + '%>')
+         })
+ .then(function(result) {
+         $("#msg").text('準備完了')
+         });
+ }());
 </script>
-  <script>
-    $(document).ready(function() { });
-  </script>
+<script>
+$(document).ready(function() { });
+</script>
 </head>
 <body>
 
 <h1> OCR サンプル</h1>
 
-<input type="button" name="capture" value="capture" id="capture">
- </input>
+<input type="button" name="capture" value="capture" id="capture"/>
+<input type="button" name="load" value="load" id="load"/>
 <div id="caption"> camera </div>
 <video   id="camera" muted playsinline autoplay></video>
-<!--<video  width="320" height="240" id="camera" muted playsinline autoplay></video>-->
-<div/>
-<!-- <canvas id="picture" ></canvas> --> 
 <div id="caption">snapshot</div>
-<div id="hiddenContainer">
-<canvas id="hiddenCanvasForQR"></canvas>
-</div>
+<div id="hiddenContainer"> <canvas id="hiddenCanvasForQR"></canvas> </div>
 
-
-<div id="msg" align="center"/>
+<div id="msg" align="center"> </div>
+<div id="log" align="center">log</div>
 <script src="js/index.js"></script>
 </body>
 </html>
